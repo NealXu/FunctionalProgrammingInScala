@@ -11,9 +11,16 @@ case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
 
+  // e3.2
   def tail[A](ls: List[A]): List[A] = ls match {
     case Nil => sys.error("tail of empty list")
     case Cons(_, t) => t
+  }
+
+
+  // e3.3
+  def setHead[A](x: A, ls: List[A]): List[A] = {
+    Cons(x, tail(ls))
   }
 
   def setHead01[A](x: A, ls: List[A]): List[A] = ls match {
@@ -21,10 +28,7 @@ object List {
     case Cons(_, t) => Cons(x, t)
   }
 
-  def setHead[A](x: A, ls: List[A]): List[A] = {
-    Cons(x, tail(ls))
-  }
-
+  // e3.4
   def drop[A](ls: List[A], n: Int): List[A] = {
     @tailrec
     def loop(ns: List[A], m: Int): List[A] = {
@@ -38,16 +42,10 @@ object List {
   }
 
 
+  // e3.5
   def dropWhile[A](ls: List[A])(f: A => Boolean): List[A] = {
     ls match {
       case Cons(h, t) if f(h) => dropWhile(t)(f)
-      case _ => ls
-    }
-  }
-
-  def dropWhile02[A](ls: List[A], f: A => Boolean): List[A] = {
-    ls match {
-      case Cons(h, t) if f(h) => dropWhile02(t, f)
       case _ => ls
     }
   }
@@ -76,10 +74,10 @@ object List {
     loop(ls, Nil)
   }
 
+  // e3.6
   def init[A](ls: List[A]): List[A] = {
     reverse(tail(reverse(ls)))
   }
-
 
   def init01[A](l: List[A]): List[A] = l match {
     case Nil => sys.error("init of empty list")
@@ -87,7 +85,7 @@ object List {
     case Cons(h, t) => Cons(h, init01(t))
   }
 
-
+  // e3.11
   def sum(ls: List[Int]): Int = {
     foldLeft(ls, 0)(_ + _)
   }
@@ -96,6 +94,7 @@ object List {
     foldRight(ls, 0)(_ + _)
   }
 
+  // e3.12
   def product(ls: List[Double]): Double = {
     foldLeft(ls, 1.0)(_ * _)
   }
@@ -103,6 +102,7 @@ object List {
     foldRight(ls, 1.0)(_ * _)
   }
 
+  // e3.9
   def length[A](ls: List[A]): Int = {
     foldLeft(ls, 0: Int)((z, _) => z + 1)
   }
@@ -111,11 +111,13 @@ object List {
     foldRight(ls, 0: Int)((_, y) => y + 1)
   }
 
+  // e3.7
   def foldRight[A, B](ls: List[A], z: B)(f: (A, B) => B): B = ls match {
     case Nil => z
     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
+  // e3.10
   def foldLeft[A,B](ls: List[A], z: B)(f: (B, A) => B): B = {
     ls match {
       case Nil => z
