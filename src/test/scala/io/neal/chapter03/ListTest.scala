@@ -33,8 +33,11 @@ class ListTest extends FlatSpec {
     assertResult(List[Int](2 to 5 by 2: _*))(List.filter01(ls)(_ % 2 == 0))
     assertResult(List[Int](6, 6, 6, 6, 6))(List.plus(ls, List.reverse(ls)))
     assertResult(List[(Int, Int)]((1, 5), (2, 4), (3, 3), (4, 2), (5, 1)))(List.zipWith(ls, List.reverse(ls)))
+    assertResult(List[(Int, Int)]((1, 5), (2, 4), (3, 3), (4, 2), (5, 1)))(List.zipWith01(ls, List.reverse(ls)))
     assert(List.hasSubsequence(ls, List(3, 4)))
-    //assert(!List.hasSubsequence(ls, List(4, 4)))
+    assert(List.hasSubsequence(ls, List(3)))
+    assert(!List.hasSubsequence(ls, List(4, 4)))
+    assert(!List.hasSubsequence(ls, List(9, 83, 3, 2, 4, 4)))
   }
 
 }

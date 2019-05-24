@@ -19,7 +19,7 @@ object List {
   }
 
   def size[A](ls: List[A]): Int = {
-    foldLeft(ls, 0)((b, _) =>  b + 1)
+    foldLeft(ls, 0)((b, _) => b + 1)
   }
 
   def isEmpty[A](ls: List[A]): Boolean = size(ls) == 0
@@ -28,14 +28,15 @@ object List {
 
   // e3.2
   def tail[A](ls: List[A]): List[A] = ls match {
-    case Nil => sys.error("tail of empty list")
+    case Nil => Nil
     case Cons(_, t) => t
   }
 
   def tail01[A](ls: List[A]): List[A] = ls match {
-    case Nil => Nil
+    case Nil => sys.error("tail of empty list")
     case Cons(_, t) => t
   }
+
   // e3.3
   def setHead[A](x: A, ls: List[A]): List[A] = {
     Cons(x, tail(ls))
@@ -252,10 +253,28 @@ object List {
     loop(reverse(ls), reverse(ns), Nil)
   }
 
+  // e3.23
+  def zipWith01[A, B](ls: List[A], ns: List[B]): List[(A, B)] = (ls, ns) match {
+    case (Cons(_, _), Nil) => Nil
+    case (Nil, Cons(_, _)) => Nil
+    case (Nil, Nil) => Nil
+    case (Cons(x, xs), Cons(y, ys)) => Cons((x, y), zipWith01(xs, ys))
+  }
+
   // e.3.24
   def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
-    true
+    if (startsWith(sup, sub)) {
+      true
+    } else {
+      if (size(sup) <= size(sub)) false else hasSubsequence(tail(sup), sub)
+    }
+  }
 
+  def startsWith[A](ls: List[A], ns: List[A]): Boolean = (ls, ns) match {
+    case (Nil, Nil) => true
+    case (Nil, Cons(_, _)) => false
+    case (Cons(_, _), Nil) => true
+    case (Cons(x, xs), Cons(y, ys)) => if (x == y) startsWith(xs, ys) else false
   }
 
 }
