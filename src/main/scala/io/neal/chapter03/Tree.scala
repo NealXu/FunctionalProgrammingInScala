@@ -8,7 +8,7 @@ sealed trait Tree[+A] {
    */
   def size: Int = this match {
     case Leaf(_) => 1
-    case Branch(l, r) => 2 + l.size + r.size
+    case Branch(l, r) => 1 + l.size + r.size
   }
 
   /**
@@ -34,7 +34,7 @@ sealed trait Tree[+A] {
    */
   def depth: Int = {
     this match {
-      case Leaf(_) => 1
+      case Leaf(_) => 0
       case Branch(l, r) => 1 + l.depth max r.depth
     }
   }
