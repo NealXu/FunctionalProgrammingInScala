@@ -61,7 +61,6 @@ object List {
     loop(ls, 1)
   }
 
-
   // e3.5
   def dropWhile[A](ls: List[A])(f: A => Boolean): List[A] = {
     ls match {
@@ -261,7 +260,7 @@ object List {
     case (Cons(x, xs), Cons(y, ys)) => Cons((x, y), zipWith01(xs, ys))
   }
 
-  // e.3.24
+  // e3.24
   def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
     if (startsWith(sup, sub)) {
       true
