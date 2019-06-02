@@ -8,6 +8,10 @@ object OptionDataType {
     if (xs.isEmpty) None else Some(xs.sum / xs.size)
   }
 
+  def mean01(xs: Seq[Double]): Either[String, Double] = {
+    if (xs.isEmpty) Left("mean of empty list!") else Right(xs.sum / xs.size)
+  }
+
   /**
    * e4.2
    * Implement the variance function in terms of flatMap. If the mean of a sequence is m,
@@ -27,7 +31,9 @@ object OptionDataType {
 
   def lift[A, B](f: A => B): Option[A] => Option[B] = _ map f
 
-  def Try[A](a: => A): Option[A] = try Some(a) catch { case _: Exception => None }
+  def Try[A](a: => A): Option[A] = try Some(a) catch {
+    case _: Exception => None
+  }
 
 
   /**
@@ -38,6 +44,23 @@ object OptionDataType {
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = (a, b) match {
     case (Some(x), Some(y)) => Some(f(x, y))
     case _ => None
+  }
+
+  def map2_01[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    a.flatMap(x => b.map(y => f(x, y)))
+  }
+
+  /**
+   * A for-comprehension consists of a sequence of bindings, like aa <- a, followed by a
+   * yield after the closing brace, where the yield may make use of any of the values
+   * on the left side of any previous <- binding. The compiler desugars the bindings to
+   * flatMap calls, with the final binding and yield being converted to a call to map.
+   */
+  def map2_02[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    for {
+      x <- a
+      y <- b
+    } yield f(x, y)
   }
 
   /**
@@ -53,5 +76,24 @@ object OptionDataType {
 
   def sequence01[A](a: List[Option[A]]): Option[List[A]] = {
     a.foldRight[Option[List[A]]](Some(Nil))((elem, result) => result.flatMap(r => elem.map(e => e :: r)))
+  }
+
+  /**
+   * e.4.5
+   * Implement this function. It’s straightforward to do using map and sequence, but try
+   * for a more efficient implementation that only looks at the list once. In fact, implement
+   * sequence in terms of traverse.
+   */
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
+    a.foldRight[Option[List[B]]](Some(Nil))((elem, result) => result.flatMap(r => f(elem).map(e => e :: r)))
+  }
+
+  def traverse01[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
+    a.foldRight[Option[List[B]]](Some(Nil)) { (x, result) =>
+      for {
+        r <- result
+        e <- f(x)
+      } yield e :: r
+    }
   }
 }
