@@ -2,8 +2,6 @@ package io.neal.chapter05
 
 sealed trait Stream[+A] {
 
-  import Stream._
-
   def headOption: Option[A] = {
     this match {
       case Empty => None
@@ -34,7 +32,6 @@ sealed trait Stream[+A] {
     }
 
     loop(this, Nil).reverse
-
   }
 
   /**
@@ -44,7 +41,7 @@ sealed trait Stream[+A] {
    */
   def take(n: Int): Stream[A] = {
     this match {
-      case Cons(h, t) => Cons(h, () => t().take(n - 1))
+      case Cons(h, t) if n > 0 => Cons(h, () => t().take(n - 1))
       case _ => Empty
     }
   }
@@ -58,6 +55,18 @@ sealed trait Stream[+A] {
     }
 
     loop(this, 0)
+  }
+
+  /**
+   * e5.3
+   * Write the function takeWhile for returning all starting elements of a Stream that
+   * match the given predicate.
+   */
+  def takeWhile(p: A => Boolean): Stream[A] = {
+    this match {
+      case Cons(h, t) if p(h()) => Cons(h, () => t().takeWhile(p))
+      case _ => Empty
+    }
   }
 
 }

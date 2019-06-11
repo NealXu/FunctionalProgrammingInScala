@@ -39,7 +39,7 @@ sealed trait Either[+E, +A] {
     }
   }
 
-  def map2[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = {
+  def map2Ex[EE >: E, B, C](b: Either[EE, B])(f: (A, B) => C): Either[EE, C] = {
     for {a <- this; b1 <- b} yield f(a, b1)
   }
 

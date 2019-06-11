@@ -44,7 +44,7 @@ sealed trait Tree[+A] {
    * Write a function map, analogous to the method of the same name on List, that modifies
    * each element in a tree with a given function.
    */
-  def map[M, N](f: M => N): Tree[N] = {
+  def map[B](f: A => B): Tree[B] = {
     this match {
       case Leaf(v) => Leaf(f(v))
       case Branch(l, r) => Branch(l.map(f), r.map(f))
@@ -56,20 +56,3 @@ case class Leaf[A](value: A) extends Tree[A]
 
 case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 
-case object Til extends Tree[Nothing]
-
-
-object Tree {
-  def apply[A](as: A*): Tree[A] = {
-    if (as.isEmpty) {
-      Til
-    } else {
-      as.map(Leaf(_)).foldLeft(Til: Tree[A]){(z, a) =>
-        z match {
-          case Til => Branch(a, Til)
-          //case
-        }
-      }
-    }
-  }
-}
