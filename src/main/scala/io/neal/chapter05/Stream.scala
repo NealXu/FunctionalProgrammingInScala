@@ -14,6 +14,10 @@ sealed trait Stream[+A] {
     case _ => false
   }
 
+  def exists01(p: A => Boolean): Boolean = {
+    foldRight(false)((x, y) => p(x()) || y)
+  }
+
   def foldRight[B](z: => B)(f: (A, => B) => B): B = {
     this match {
       case Cons(h, t) => f(h(), t().foldRight(z)(f))
