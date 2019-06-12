@@ -2,6 +2,8 @@ package io.neal.chapter05
 
 sealed trait Stream[+A] {
 
+  import Stream._
+
   def headOption: Option[A] = {
     this match {
       case Empty => None
@@ -15,7 +17,7 @@ sealed trait Stream[+A] {
   }
 
   def exists01(p: A => Boolean): Boolean = {
-    foldRight(false)((x, y) => p(x()) || y)
+    foldRight(false)((x, y) => p(x) || y)
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B): B = {
@@ -83,6 +85,39 @@ sealed trait Stream[+A] {
       case Cons(h, t) if p(h()) => Cons(h, () => t().takeWhile(p))
       case _ => Empty
     }
+  }
+
+  /**
+   * e5.4
+   * Implement forAll, which checks that all elements in the Stream match a given predicate.
+   * Your implementation should terminate the traversal as soon as it encounters a
+   * non-matching value.
+   */
+  def forAll(p: A => Boolean): Boolean = {
+    this match {
+      case Cons(h, t) if p(h()) => t().forAll(p)
+      case Cons(h, _) if !p(h()) => false
+      case _ => true
+    }
+  }
+
+  /**
+   * e5.5
+   * Use foldRight to implement takeWhile.
+   */
+  def takeWhile01(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((x, y) => if (p(x)) cons(x, y) else empty)
+  }
+
+  def reverse: Stream[A] = {
+    def loop(s: Stream[A], tmp: Stream[A]): Stream[A] = {
+      s match {
+        case Cons(h, t) => loop(t(), cons(h(), tmp))
+        case _ => tmp
+      }
+    }
+
+    loop(this, Empty)
   }
 
 }
