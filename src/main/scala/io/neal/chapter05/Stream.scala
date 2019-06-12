@@ -9,6 +9,18 @@ sealed trait Stream[+A] {
     }
   }
 
+  def exists(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) || t().exists(p)
+    case _ => false
+  }
+
+  def foldRight[B](z: => B)(f: (A, => B) => B): B = {
+    this match {
+      case Cons(h, t) => f(h(), t().foldRight(z)(f))
+      case _ => z
+    }
+  }
+
   /**
    * e5.1
    * Write a function to convert a Stream to a List, which will force its evaluation and let
