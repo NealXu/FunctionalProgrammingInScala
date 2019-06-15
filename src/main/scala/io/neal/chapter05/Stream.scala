@@ -120,6 +120,39 @@ sealed trait Stream[+A] {
     loop(this, Empty)
   }
 
+  /**
+   * e5.6
+   * Hard: Implement headOption using foldRight.
+   */
+  def headOption01: Option[A] = {
+    foldRight[Option[A]](None)((x, _) => Some(x))
+  }
+
+  /**
+   * e5.7
+   * Implement map, filter, append, and flatMap using foldRight. The append method
+   * should be non-strict in its argument.
+   */
+  def map[B](f: A => B): Stream[B] = {
+    foldRight(empty[B])((x, y) => cons(f(x), y))
+  }
+
+  def filter(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((x, y) => if (p(x)) cons(x, y) else y)
+  }
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] = {
+    foldRight(empty[B])((x, y) => f(x).foldRight(y)((n, m) => cons(n, m)))
+  }
+
+  def flatMap01[B](f: A => Stream[B]): Stream[B] = {
+    foldRight(empty[B])((x, y) => f(x).append(y))
+  }
+
+  def append[B >: A](s: Stream[B]): Stream[B] = {
+    foldRight(s)((x, y) => cons(x, y))
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -139,5 +172,19 @@ object Stream {
   def apply[A](as: A*): Stream[A] = {
     if (as.isEmpty) Empty else cons(as.head, apply(as.tail: _*))
   }
+
+  /**
+   * e5.8
+   * Generalize ones slightly to the function constant, which returns an infinite Stream of
+   * a given value.
+   */
+  def constant[A](a: A): Stream[A] = cons(a, constant(a))
+
+  /**
+   * e5.9
+   * Write a function that generates an infinite stream of integers, starting from n, then n
+   * + 1, n + 2, and so on.
+   */
+  def from(n: Int): Stream[Int] = cons(n, from(n + 1))
 
 }
