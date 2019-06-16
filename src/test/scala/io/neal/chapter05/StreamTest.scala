@@ -38,6 +38,9 @@ class StreamTest extends FlatSpec {
     assertResult(List(1, 1, 1))(constant(1).take(3).toList)
     assertResult(list)(from(1).take(5).toList)
     assertResult(fibsTake5)(fibs.take(5).toList)
+    assertResult(List(1, 1, 1))(constant01(1).take(3).toList)
+    assertResult(list)(from01(1).take(5).toList)
+    assertResult(fibsTake5)(fibs01.take(5).toList)
   }
 
 }

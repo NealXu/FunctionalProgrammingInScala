@@ -200,4 +200,33 @@ object Stream {
     loop(0, 1)
   }
 
+  /**
+   * e5.11
+   * Write a more general stream-building function called unfold. It takes an initial state,
+   * and a function for producing both the next state and the next value in the generated
+   * stream.
+   */
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case Some(x) => cons(x._1, unfold(x._2)(f))
+      case None => empty[A]
+    }
+  }
+
+  /**
+   * e5.12
+   * Write fibs, from, constant, and ones in terms of unfold.
+   */
+  def constant01[A](a: A): Stream[A] = {
+    unfold(a)(Some(a, _))
+  }
+
+  def from01(n: Int): Stream[Int] = {
+    unfold(n)(s => Some(s, s + 1))
+  }
+
+  def fibs01: Stream[Int] = {
+    unfold((0, 1))(s => Some(s._1, (s._2, s._1 + s._2)))
+  }
+
 }
