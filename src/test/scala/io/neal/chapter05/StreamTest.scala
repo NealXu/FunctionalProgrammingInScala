@@ -8,6 +8,7 @@ class StreamTest extends FlatSpec {
   "test apis of Stream" should "be ok" in {
     val stream = Stream(1, 2, 3, 4, 5)
     val stream01 = Stream(2, 3, 4)
+    val stream02 = Stream(2, 4)
     val list = List(1, 2, 3, 4, 5)
     val fibsTake5 = List(0, 1, 1, 2, 3)
     val even = (x: Int) => (x % 2) == 0
@@ -47,7 +48,8 @@ class StreamTest extends FlatSpec {
     assertResult(list.takeWhile(even))(stream.takeWhile02(even).toList)
     assertResult(list.takeWhile(lessThanThree))(stream.takeWhile02(lessThanThree).toList)
     assertResult(List((1, 2), (2, 3), (3, 4)))(stream.zipWith(stream01).toList)
-
+    assertResult(true)(stream.startsWith(stream01))
+    assertResult(false)(stream.startsWith(stream02))
   }
 
 }
