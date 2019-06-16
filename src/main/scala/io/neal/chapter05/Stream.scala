@@ -153,6 +153,48 @@ sealed trait Stream[+A] {
     foldRight(s)((x, y) => cons(x, y))
   }
 
+  /**
+   * e5.13
+   * Write fibs, from, constant, and ones in terms of unfold.
+   */
+  def map01[B](f: A => B): Stream[B] = {
+    unfold(this) {
+      case Cons(h, t) => Some(f(h()), t())
+      case Empty => None
+    }
+  }
+
+  def take01(n: Int): Stream[A] = {
+    unfold((this, n)) { s =>
+      s._1 match {
+        case Cons(h, t) => if (s._2 > 0) Some(h(), (t(), s._2 - 1)) else None
+        case Empty => None
+      }
+    }
+  }
+
+  def takeWhile02(p: A => Boolean): Stream[A] = {
+    unfold(this) {
+      case Cons(h, t) => if (p(h())) Some(h(), t()) else None
+      case Empty => None
+    }
+  }
+
+  def zipWith[B](s: Stream[B]): Stream[(A, B)] = {
+    unfold((this, s)) {
+      case (Cons(h, t), Cons(hh, tt)) => Some((h(), hh()), (t(), tt()))
+      case _ => None
+    }
+  }
+
+  def zipAll[B](s: Stream[B]): Stream[(Option[A], Option[B])] = {
+    unfold((this, s)) {
+      case (Cons(h, t), Cons(hh, tt)) => Some((Some(h()), Some(hh())), (t(), tt()))
+      case (Cons(h, t), Empty) => Some((Some(h()), None), (t(), Empty))
+      case (Empty, Cons(h, t)) => Some((None, Some(h())), (Empty, t()))
+      case _ => None
+    }
+  }
 }
 
 case object Empty extends Stream[Nothing]
@@ -228,5 +270,6 @@ object Stream {
   def fibs01: Stream[Int] = {
     unfold((0, 1))(s => Some(s._1, (s._2, s._1 + s._2)))
   }
+
 
 }
