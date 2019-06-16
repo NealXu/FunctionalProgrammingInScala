@@ -8,6 +8,7 @@ class StreamTest extends FlatSpec {
   "test apis of Stream" should "be ok" in {
     val stream = Stream(1, 2, 3, 4, 5)
     val list = List(1, 2, 3, 4, 5)
+    val fibsTake5 = List(0, 1, 1, 2, 3)
     val even = (x: Int) => (x % 2) == 0
     val lessThanThree = (x: Int) => x < 3
     val nonNegative = (x: Int) => x > 0
@@ -36,6 +37,7 @@ class StreamTest extends FlatSpec {
     assertResult(list ::: list.map(plusOne))(stream.append(stream.map(plusOne)).toList)
     assertResult(List(1, 1, 1))(constant(1).take(3).toList)
     assertResult(list)(from(1).take(5).toList)
+    assertResult(fibsTake5)(fibs.take(5).toList)
   }
 
 }

@@ -187,4 +187,17 @@ object Stream {
    */
   def from(n: Int): Stream[Int] = cons(n, from(n + 1))
 
+  /**
+   * e5.10
+   * Write a function fibs that generates the infinite stream of Fibonacci numbers: 0, 1, 1,
+   * 2, 3, 5, 8, and so on.
+   */
+  def fibs: Stream[Int] = {
+    def loop(x: Int, y: Int): Stream[Int] = {
+      cons(x, loop(y, x + y))
+    }
+
+    loop(0, 1)
+  }
+
 }
