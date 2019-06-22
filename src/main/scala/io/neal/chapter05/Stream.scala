@@ -235,6 +235,20 @@ sealed trait Stream[+A] {
       case s: Stream[A] => Some(s, s.tail)
     }
   }
+
+  /**
+   * e5.16
+   * Hard: Generalize tails to the function scanRight, which is like a foldRight that
+   * returns a stream of the intermediate results. For example:
+   * scala> Stream(1,2,3).scanRight(0)(_ + _).toList
+   * res0: List[Int] = List(6,5,3,0)
+   */
+  def scanRight[B](z: B)(f: (A, B) => B): Stream[B] = {
+    unfold(this) {
+      case Empty => None
+      case s: Stream[A] => Some(s.foldRight(z)((x, y) => f(x, y)), s.tail)
+    }
+  }
 }
 
 case object Empty extends Stream[Nothing]
