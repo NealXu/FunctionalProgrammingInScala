@@ -157,4 +157,37 @@ object RNG {
     sequence(List.fill(count)(int))
   }
 
+  /**
+   * e6.8
+   * Implement flatMap, and then use it to implement nonNegativeLessThan.
+   */
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = {
+    rng =>
+      val (n1, rng1) = f(rng)
+      g(n1)(rng1)
+  }
+
+  def nonNegativeLessThan(n: Int): Rand[Int] = {
+    flatMap(nonNegativeInt) {
+      x =>
+        val mod = x % n
+        if (x + (n - 1) - mod > 0) unit(mod) else nonNegativeLessThan(n)
+    }
+  }
+
+  /**
+   * e6.9
+   * Reimplement map and map2 in terms of flatMap. The fact that this is possible is what
+   * we’re referring to when we say that flatMap is more powerful than map and map2.
+   */
+
+  def _map[A, B](s: Rand[A])(f: A => B): Rand[B] = {
+    flatMap(s)(x => unit(f(x)))
+  }
+
+
+  def _map2[A, B, C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+    flatMap(ra)(a => flatMap(rb)(b => unit(f(a, b))))
+  }
+
 }
