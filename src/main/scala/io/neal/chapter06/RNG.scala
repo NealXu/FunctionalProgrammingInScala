@@ -190,4 +190,6 @@ object RNG {
     flatMap(ra)(a => flatMap(rb)(b => unit(f(a, b))))
   }
 
+  def rollDie: Rand[Int] = _map(nonNegativeLessThan(6))(_ + 1)
+
 }
