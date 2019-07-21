@@ -19,8 +19,6 @@ case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object Machine {
 
-  import State._
-
   private var machine: Option[Machine] = None
 
   def apply(locked: Boolean, candies: Int, coins: Int): Machine = {
@@ -29,10 +27,6 @@ object Machine {
       machine = Some(m)
       m
     }
-  }
-
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
-    unit((0, 0))
   }
 
 }
